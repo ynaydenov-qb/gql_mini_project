@@ -4,7 +4,7 @@ export class Book {
   author: string;
   isLent: boolean;
   currentLendeeId?: string;
-  dueDate?: Date;
+  dueDate?: string;
   lendingHistory: LendingRecord[];
 
   constructor(
@@ -13,7 +13,7 @@ export class Book {
     author: string,
     isLent: boolean = false,
     currentLendeeId?: string,
-    dueDate?: Date,
+    dueDate?: string,
     lendingHistory: LendingRecord[] = []
   ) {
     this.id = id;
@@ -40,15 +40,15 @@ export class Customer {
 
 export class LendingRecord {
   customerId: string;
-  lentDate: Date;
-  returnDate?: Date;
-  dueDate: Date;
+  lentDate: string;
+  returnDate?: string;
+  dueDate: string;
 
   constructor(
     customerId: string,
-    lentDate: Date,
-    dueDate: Date,
-    returnDate?: Date
+    lentDate: string,
+    dueDate: string,
+    returnDate?: string
   ) {
     this.customerId = customerId;
     this.lentDate = lentDate;
