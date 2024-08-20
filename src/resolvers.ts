@@ -1,6 +1,7 @@
 import { Book, Customer, LendingRecord } from "./models";
 import { BooksDataSource } from "./data/booksDataSource";
 import { CustomersDataSource } from "./data/customersDataSource";
+import { logger } from "./logger";
 
 const booksDataSource = new BooksDataSource();
 const customersDataSource = new CustomersDataSource();
@@ -29,6 +30,15 @@ export const resolvers = {
       _: any,
       { id, title, author }: { id: string; title: string; author: string }
     ): Book => {
+      const existingBook = booksDataSource.getBookById(id);
+
+      // Check if the book id already exists
+      if (existingBook) {
+        const errorMessage = `Book with ID ${id} already exists.`;
+        logger.error(errorMessage);
+        throw new Error(errorMessage);
+      }
+
       const newBook = new Book(id, title, author);
       booksDataSource.addBook(newBook);
       return newBook;
@@ -39,6 +49,14 @@ export const resolvers = {
       _: any,
       { id, name, email }: { id: string; name: string; email: string }
     ): Customer => {
+      const existingCustomer = customersDataSource.getCustomerById(id);
+
+      // Check if the customer id already exists
+      if (existingCustomer) {
+        const errorMessage = `Customer with ID ${id} already exists.`;
+        logger.error(errorMessage);
+        throw new Error(errorMessage);
+      }
       const newCustomer = new Customer(id, name, email);
       customersDataSource.addCustomer(newCustomer);
       return newCustomer;
@@ -73,7 +91,9 @@ export const resolvers = {
 
         return book;
       } else {
-        throw new Error("Book is already lent or does not exist.");
+        const errorMessage = `Book with ID ${bookId} is already lent or does not exist.`;
+        logger.error(errorMessage);
+        throw new Error(errorMessage);
       }
     },
 
@@ -98,7 +118,9 @@ export const resolvers = {
           return book;
         }
       }
-      throw new Error("Book is not currently lent or does not exist.");
+      const errorMessage = `Book with ID ${bookId} is not currently lent or does not exist.`;
+      logger.error(errorMessage);
+      throw new Error(errorMessage);
     },
   },
 
