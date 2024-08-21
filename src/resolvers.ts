@@ -70,7 +70,6 @@ export const resolvers = {
 
         book.isLent = true;
         book.currentLendeeId = customer.id;
-        book.dueDate = dueDate;
         book.lendingHistory.push(record);
         booksDataSource.updateBook(book);
 
@@ -97,7 +96,6 @@ export const resolvers = {
           record.returnDate = returnDate;
           book.isLent = false;
           book.currentLendeeId = undefined;
-          book.dueDate = undefined;
           booksDataSource.updateBook(book);
 
           return book;

@@ -7,7 +7,6 @@ export class Book {
   author: string;
   isLent: boolean;
   currentLendeeId?: string;
-  dueDate?: string;
   lendingHistory: LendingRecord[];
 
   constructor(
@@ -15,7 +14,6 @@ export class Book {
     author: string,
     isLent: boolean = false,
     currentLendeeId?: string,
-    dueDate?: string,
     lendingHistory: LendingRecord[] = []
   ) {
     this.id = uuidv4();
@@ -23,7 +21,6 @@ export class Book {
     this.author = author;
     this.isLent = isLent;
     this.currentLendeeId = currentLendeeId;
-    this.dueDate = dueDate;
     this.lendingHistory = lendingHistory;
   }
 }

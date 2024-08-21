@@ -7,7 +7,6 @@ export const bookTypeDefs = gql`
     author: String!
     isLent: Boolean!
     currentLendee: Customer
-    dueDate: String
     lendingHistory: [LendingRecord!]!
   }
 `;
