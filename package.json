@@ -6,6 +6,7 @@
   "author": "Yoan Naydenov <ynaydenov@quickbase.com>",
   "license": "MIT",
   "dependencies": {
+    "@graphql-tools/merge": "^9.0.6",
     "@types/node": "^22.4.1",
     "apollo-server": "^3.13.0",
     "dotenv": "^16.4.5",
