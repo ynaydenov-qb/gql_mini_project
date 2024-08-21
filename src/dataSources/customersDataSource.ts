@@ -3,7 +3,12 @@ import * as fs from "fs";
 import * as path from "path";
 
 // Path to the JSON file containing the customers
-const customersDataPath = path.join(__dirname, "customersData.json");
+const customersDataPath = path.join(
+  __dirname,
+  "..",
+  "data",
+  "customersData.json"
+);
 
 export class CustomersDataSource {
   customers: Customer[] = [];

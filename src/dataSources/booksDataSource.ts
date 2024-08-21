@@ -3,7 +3,7 @@ import * as fs from "fs";
 import * as path from "path";
 
 // Path to JSON file where books are stored
-const booksDataPath = path.join(__dirname, "booksData.json");
+const booksDataPath = path.join(__dirname, "..", "data", "booksData.json");
 
 export class BooksDataSource {
   books: Book[] = [];

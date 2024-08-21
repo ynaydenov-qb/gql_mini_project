@@ -1,8 +1,8 @@
 import { Book} from "./models/book";
 import { Customer } from "./models/customer";
 import { LendingRecord } from "./models/lendingRecord";
-import { BooksDataSource } from "./data/booksDataSource";
-import { CustomersDataSource } from "./data/customersDataSource";
+import { BooksDataSource } from "./dataSources/booksDataSource";
+import { CustomersDataSource } from "./dataSources/customersDataSource";
 import { logger } from "./logger";
 
 const booksDataSource = new BooksDataSource();
