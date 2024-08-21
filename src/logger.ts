@@ -1,7 +1,8 @@
 import { createLogger, format, transports } from "winston";
 import path from "path";
+import DailyRotateFile from "winston-daily-rotate-file";
 
-const logPath = path.join(__dirname, "logs", "server.log");
+const logDir = path.join(__dirname, "logs");
 
 export const logger = createLogger({
     level: "info",
@@ -12,8 +13,18 @@ export const logger = createLogger({
         })
     ),
     transports: [
-        new transports.File({
-            filename: logPath
+        // Using logs rotation technique
+        new DailyRotateFile({
+            // The file name is server-%DATE%.log, where %DATE% is replaced with the current date
+            filename: path.join(logDir, 'server-%DATE%.log'),
+            // The logs are rotated daily
+            datePattern: 'YYYY-MM-DD',
+            // The maximum size of a log file is set to 20 megabytes, after which a new log file is created
+            maxSize: '20m',
+            // Keep logs for the last 14 days, deleting the older ones automatically
+            maxFiles: '14d',
+            // Compress old logs to save space
+            zippedArchive: true,
         })
     ]
 });
