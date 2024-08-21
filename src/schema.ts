@@ -8,6 +8,7 @@ export const typeDefs = gql`
   }
 
   type LendingRecord {
+    id: String!
     customer: Customer!
     lentDate: String!
     returnDate: String
@@ -32,8 +33,8 @@ export const typeDefs = gql`
   }
 
   type Mutation {
-    addBook(id: String!, title: String!, author: String!): Book
-    addCustomer(id: String!, name: String!, email: String!): Customer
+    addBook(title: String!, author: String!): Book
+    addCustomer(name: String!, email: String!): Customer
     lendBook(
       bookId: String!
       customerId: String!

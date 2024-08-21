@@ -1,4 +1,5 @@
 import { LendingRecord } from "./lendingRecord";
+import { v4 as uuidv4 } from "uuid";
 
 export class Book {
   id: string;
@@ -10,7 +11,6 @@ export class Book {
   lendingHistory: LendingRecord[];
 
   constructor(
-    id: string,
     title: string,
     author: string,
     isLent: boolean = false,
@@ -18,7 +18,7 @@ export class Book {
     dueDate?: string,
     lendingHistory: LendingRecord[] = []
   ) {
-    this.id = id;
+    this.id = uuidv4();
     this.title = title;
     this.author = author;
     this.isLent = isLent;

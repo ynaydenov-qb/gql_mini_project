@@ -30,18 +30,9 @@ export const resolvers = {
     // Add a new book, the isLent field is set to false by default
     addBook: (
       _: any,
-      { id, title, author }: { id: string; title: string; author: string }
+      {title, author }: {title: string; author: string }
     ): Book => {
-      const existingBook = booksDataSource.getBookById(id);
-
-      // Check if the book id already exists
-      if (existingBook) {
-        const errorMessage = `Book with ID ${id} already exists.`;
-        logger.error(errorMessage);
-        throw new Error(errorMessage);
-      }
-
-      const newBook = new Book(id, title, author);
+      const newBook = new Book(title, author);
       booksDataSource.addBook(newBook);
       return newBook;
     },
@@ -49,17 +40,9 @@ export const resolvers = {
     // Add a new customer
     addCustomer: (
       _: any,
-      { id, name, email }: { id: string; name: string; email: string }
+      {name, email }: {name: string; email: string }
     ): Customer => {
-      const existingCustomer = customersDataSource.getCustomerById(id);
-
-      // Check if the customer id already exists
-      if (existingCustomer) {
-        const errorMessage = `Customer with ID ${id} already exists.`;
-        logger.error(errorMessage);
-        throw new Error(errorMessage);
-      }
-      const newCustomer = new Customer(id, name, email);
+      const newCustomer = new Customer(name, email);
       customersDataSource.addCustomer(newCustomer);
       return newCustomer;
     },
