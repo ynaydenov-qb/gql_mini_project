@@ -1,4 +1,6 @@
-import { Book, Customer, LendingRecord } from "./models";
+import { Book} from "./models/book";
+import { Customer } from "./models/customer";
+import { LendingRecord } from "./models/lendingRecord";
 import { BooksDataSource } from "./data/booksDataSource";
 import { CustomersDataSource } from "./data/customersDataSource";
 import { logger } from "./logger";

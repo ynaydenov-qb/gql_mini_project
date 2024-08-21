@@ -1,4 +1,4 @@
-import { Book } from "../models";
+import { Book } from "../models/book";
 import * as fs from "fs";
 import * as path from "path";
 

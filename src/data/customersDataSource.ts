@@ -1,4 +1,4 @@
-import { Customer } from "../models";
+import { Customer } from "../models/customer";
 import * as fs from "fs";
 import * as path from "path";
 
