@@ -1,6 +1,6 @@
 import { Customer } from "../models/customer";
-import * as fs from "fs";
-import * as path from "path";
+import fs from "fs";
+import path from "path";
 
 // Path to the JSON file containing the customers
 const customersDataPath = path.join(
