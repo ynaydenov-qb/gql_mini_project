@@ -1,5 +1,5 @@
 import { LendingRecord } from "./lendingRecord";
-import { v4 as uuidv4 } from "uuid";
+import { generateUUID } from "../utils";
 
 export class Book {
   id: string;
@@ -16,7 +16,7 @@ export class Book {
     currentLendeeId?: string,
     lendingHistory: LendingRecord[] = []
   ) {
-    this.id = uuidv4();
+    this.id = generateUUID();
     this.title = title;
     this.author = author;
     this.isLent = isLent;

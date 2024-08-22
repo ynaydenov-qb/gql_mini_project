@@ -1,4 +1,4 @@
-import { v4 as uuidv4 } from "uuid";
+import { generateUUID } from "../utils";
 
 export class Customer {
   id: string;
@@ -6,7 +6,7 @@ export class Customer {
   email: string;
 
   constructor(name: string, email: string) {
-    this.id = uuidv4();
+    this.id = generateUUID();
     this.name = name;
     this.email = email;
   }

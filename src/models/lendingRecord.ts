@@ -1,4 +1,4 @@
-import { v4 as uuidv4 } from "uuid";
+import { generateUUID } from "../utils";
 
 export class LendingRecord {
   id: string;
@@ -13,7 +13,7 @@ export class LendingRecord {
     dueDate: string,
     returnDate?: string
   ) {
-    this.id = uuidv4();
+    this.id = generateUUID();
     this.customerId = customerId;
     this.lentDate = lentDate;
     this.dueDate = dueDate;
