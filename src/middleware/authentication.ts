@@ -1,7 +1,8 @@
 import { AuthenticationError } from "apollo-server";
+import { Request } from "express";
 import { logger } from "../logger";
 
-export const authenticationContextMiddleware = ({ req }: { req: any }) => {
+export const authenticationContextMiddleware = ({ req }: { req: Request }) => {
   const authHeaderUser: string = req.headers.authorization || "";
   const expectedHeader: string = process.env.AUTH_TOKEN!;
 
