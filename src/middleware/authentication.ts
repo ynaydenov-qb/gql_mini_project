@@ -6,7 +6,6 @@ export const authenticationContextMiddleware = ({ req }: { req: any }) => {
   const expectedHeader: string = process.env.AUTH_TOKEN!;
 
   if (authHeaderUser !== expectedHeader) {
-    logger.error(`Unauthorized access attempt: ${req.method} ${req.url}`);
     throw new AuthenticationError("Unauthorized");
   }
   logger.info(
