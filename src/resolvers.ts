@@ -1,4 +1,4 @@
-import { Book} from "./models/book";
+import { Book } from "./models/book";
 import { Customer } from "./models/customer";
 import { LendingRecord } from "./models/lendingRecord";
 import { BooksDataSource } from "./dataSources/booksDataSource";
@@ -30,7 +30,7 @@ export const resolvers = {
     // Add a new book, the isLent field is set to false by default
     addBook: (
       _: any,
-      {title, author }: {title: string; author: string }
+      { title, author }: { title: string; author: string }
     ): Book => {
       const newBook = new Book(title, author);
       booksDataSource.addBook(newBook);
@@ -40,7 +40,7 @@ export const resolvers = {
     // Add a new customer
     addCustomer: (
       _: any,
-      {name, email }: {name: string; email: string }
+      { name, email }: { name: string; email: string }
     ): Customer => {
       const newCustomer = new Customer(name, email);
       customersDataSource.addCustomer(newCustomer);
@@ -65,20 +65,26 @@ export const resolvers = {
       const book = booksDataSource.getBookById(bookId);
       const customer = customersDataSource.getCustomerById(customerId);
 
-      if (book && customer && !book.isLent) {
-        const record = new LendingRecord(customer.id, lentDate, dueDate);
-
-        book.isLent = true;
-        book.currentLendeeId = customer.id;
-        book.lendingHistory.push(record);
-        booksDataSource.updateBook(book);
-
-        return book;
-      } else {
-        const errorMessage = `Book with ID ${bookId} is already lent or does not exist.`;
-        logger.error(errorMessage);
-        throw new Error(errorMessage);
+      if (!book) {
+        throw new Error(`Book with ID ${bookId} was not found`);
       }
+
+      if (!customer) {
+        throw new Error(`Customer with ID ${customerId} was not found`);
+      }
+
+      if (book.isLent) {
+        throw new Error(`Book with ID ${bookId} is already lent out`);
+      }
+
+      const record = new LendingRecord(customer.id, lentDate, dueDate);
+
+      book.isLent = true;
+      book.currentLendeeId = customer.id;
+      book.lendingHistory.push(record);
+      booksDataSource.updateBook(book);
+
+      return book;
     },
 
     // Mark a book as returned, change its isLent field to false and add a new lendingRecord
@@ -87,32 +93,45 @@ export const resolvers = {
       { bookId, returnDate }: { bookId: string; returnDate: string }
     ): Book => {
       const book = booksDataSource.getBookById(bookId);
-      // Check if the book exists and is actually lent to someone
-      if (book && book.isLent) {
-        // Find the lending record without return date
-        const record = book.lendingHistory.find((r) => !r.returnDate);
-        // Update the record and the book
-        if (record) {
-          record.returnDate = returnDate;
-          book.isLent = false;
-          book.currentLendeeId = undefined;
-          booksDataSource.updateBook(book);
 
-          return book;
-        }
+      // Check if the book exists
+      if (!book) {
+        throw new Error(`Book with ID ${bookId} does not exist.`);
       }
-      const errorMessage = `Book with ID ${bookId} is not currently lent or does not exist.`;
-      logger.error(errorMessage);
-      throw new Error(errorMessage);
+
+      // Check if the book is currently lent out
+      if (!book.isLent) {
+        throw new Error(
+          `Book with ID ${bookId} is not currently lent to anyone.`
+        );
+      }
+
+      // Find the lending record without return date
+      const record = book.lendingHistory.find((r) => !r.returnDate);
+
+      if (!record) {
+        throw new Error(
+          "No active lending record found for book ID ${bookId}."
+        );
+      }
+      // Update the record and the book
+      record.returnDate = returnDate;
+      book.isLent = false;
+      book.currentLendeeId = undefined;
+
+      // Update the book in the data source
+      booksDataSource.updateBook(book);
+
+      return book;
     },
   },
 
   Book: {
     // Find the current customer that is lending the book
     currentLendee: (book: Book): Customer | null => {
-      if (book.currentLendeeId)
-        return customersDataSource.getCustomerById(book.currentLendeeId)!;
-      return null;
+      if (!book.currentLendeeId)
+        return null;
+      return customersDataSource.getCustomerById(book.currentLendeeId)!;
     },
 
     // Find the lending history
