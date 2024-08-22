@@ -1,3 +1,8 @@
+import dotenv from 'dotenv';
+
+// Load environment variables
+dotenv.config();
+
 import { ApolloServer, AuthenticationError } from "apollo-server";
 import { typeDefs } from "./schema";
 import { resolvers } from "./resolvers";
@@ -12,5 +17,4 @@ const server = new ApolloServer({
 
 server.listen().then(({ url }) => {
   logger.info(`Server started at ${url}`);
-  console.log(`Server started at ${url}`);
 });

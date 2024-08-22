@@ -1,8 +1,5 @@
 import { AuthenticationError } from "apollo-server";
 import { logger } from "../logger";
-import * as dotenv from "dotenv";
-
-dotenv.config();
 
 export const authenticationContextMiddleware = ({ req }: { req: any }) => {
   const authHeaderUser: string = req.headers.authorization || "";
