@@ -1,12 +1,12 @@
-import { ApolloServer, AuthenticationError } from "apollo-server";
-import { Request } from "express";
-import { typeDefs } from "./schema";
-import { resolvers } from "./resolvers/mainResolver";
-import { logger } from "./logger";
-import { authenticationContextMiddleware } from "./middleware/authentication";
-import { loggingContextMiddleware } from "./middleware/logging";
+import { ApolloServer } from 'apollo-server';
+import { Request } from 'express';
+import { typeDefs } from './schema';
+import { resolvers } from './resolvers/mainResolver';
+import { logger } from './logger';
+import { authenticationContextMiddleware } from './middleware/authentication';
+import { loggingContextMiddleware } from './middleware/logging';
 
-const createContext = ({ req }: {req : Request}) => {
+const createContext = ({ req }: { req: Request }) => {
   // Initialize an empty context object
   let context = {};
 

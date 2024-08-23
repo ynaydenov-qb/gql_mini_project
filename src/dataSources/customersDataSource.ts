@@ -1,13 +1,13 @@
-import { Customer } from "../models/customer";
-import fs from "fs";
-import path from "path";
+import fs from 'fs';
+import path from 'path';
+import { Customer } from '../models/customer';
 
 // Path to the JSON file containing the customers
 const customersDataPath = path.join(
   __dirname,
-  "..",
-  "data",
-  "customersData.json"
+  '..',
+  'data',
+  'customersData.json',
 );
 
 export class CustomersDataSource {
@@ -19,7 +19,7 @@ export class CustomersDataSource {
 
   // Load the data from the file
   loadData() {
-    const data = JSON.parse(fs.readFileSync(customersDataPath, "utf8"));
+    const data = JSON.parse(fs.readFileSync(customersDataPath, 'utf8'));
     this.customers = data || [];
   }
 
@@ -47,7 +47,7 @@ export class CustomersDataSource {
   // Update existing customer
   updateCustomer(updatedCustomer: Customer) {
     const index = this.customers.findIndex(
-      (customer) => customer.id === updatedCustomer.id
+      (customer) => customer.id === updatedCustomer.id,
     );
     if (index !== -1) {
       this.customers[index] = updatedCustomer;

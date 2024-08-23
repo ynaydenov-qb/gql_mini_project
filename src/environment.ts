@@ -2,13 +2,14 @@ import dotenv from 'dotenv';
 
 dotenv.config();
 
-interface EnvConfig {
+type EnvConfig = {
   NODE_ENV: string;
   AUTH_TOKEN: string;
-}
+};
 
 class Environment {
   private static instance: Environment;
+
   private envConfig: EnvConfig;
 
   private constructor() {

@@ -1,5 +1,3 @@
-// src/schema.ts
-import { gql } from "apollo-server";
 import { mergeTypeDefs } from '@graphql-tools/merge';
 import { customerTypeDefs } from './schemas/customerSchema';
 import { lendingRecordTypeDefs } from './schemas/lendingRecordSchema';

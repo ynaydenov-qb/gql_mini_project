@@ -1,9 +1,9 @@
-import { Book } from "../models/book";
-import fs from "fs";
-import path from "path";
+import fs from 'fs';
+import path from 'path';
+import { Book } from '../models/book';
 
 // Path to JSON file where books are stored
-const booksDataPath = path.join(__dirname, "..", "data", "booksData.json");
+const booksDataPath = path.join(__dirname, '..', 'data', 'booksData.json');
 
 export class BooksDataSource {
   books: Book[] = [];
@@ -14,7 +14,7 @@ export class BooksDataSource {
 
   // Load data from file to thhe object
   loadData() {
-    const data = JSON.parse(fs.readFileSync(booksDataPath, "utf8"));
+    const data = JSON.parse(fs.readFileSync(booksDataPath, 'utf8'));
     this.books = data || [];
   }
 

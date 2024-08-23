@@ -1,12 +1,17 @@
-import { LendingRecord } from "./lendingRecord";
-import { generateUUID } from "../utils";
+import { LendingRecord } from './lendingRecord';
+import { generateUUID } from '../utils';
 
 export class Book {
   id: string;
+
   title: string;
+
   author: string;
+
   isLent: boolean;
+
   currentLendeeId?: string;
+
   lendingHistory: LendingRecord[];
 
   constructor(
@@ -14,7 +19,7 @@ export class Book {
     author: string,
     isLent: boolean = false,
     currentLendeeId?: string,
-    lendingHistory: LendingRecord[] = []
+    lendingHistory: LendingRecord[] = [],
   ) {
     this.id = generateUUID();
     this.title = title;

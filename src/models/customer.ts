@@ -1,8 +1,10 @@
-import { generateUUID } from "../utils";
+import { generateUUID } from '../utils';
 
 export class Customer {
   id: string;
+
   name: string;
+
   email: string;
 
   constructor(name: string, email: string) {

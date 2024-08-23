@@ -1,8 +1,8 @@
-import { Book } from "../models/book";
-import { Customer } from "../models/customer";
-import { LendingRecord } from "../models/lendingRecord";
-import { BooksDataSource } from "../dataSources/booksDataSource";
-import { CustomersDataSource } from "../dataSources/customersDataSource";
+import { Book } from '../models/book';
+import { Customer } from '../models/customer';
+import { LendingRecord } from '../models/lendingRecord';
+import { BooksDataSource } from '../dataSources/booksDataSource';
+import { CustomersDataSource } from '../dataSources/customersDataSource';
 
 const booksDataSource = new BooksDataSource();
 const customersDataSource = new CustomersDataSource();
@@ -13,15 +13,14 @@ export const bookResolvers = {
     books: (): Book[] => booksDataSource.getBooks(),
 
     // Get a book by id
-    book: (_: any, { id }: { id: string }): Book | undefined => {
-      return booksDataSource.getBookById(id);
-    },
+    book: (_: unknown, { id }: { id: string }): Book | undefined =>
+      booksDataSource.getBookById(id),
   },
   Mutation: {
     // Add a new book, the isLent field is set to false by default
     addBook: (
-      _: any,
-      { title, author }: { title: string; author: string }
+      _: unknown,
+      { title, author }: { title: string; author: string },
     ): Book => {
       const newBook = new Book(title, author);
       booksDataSource.addBook(newBook);
@@ -29,7 +28,7 @@ export const bookResolvers = {
     },
     // Lend a book to a customer, updates the fields of a book related to lending
     lendBook: (
-      _: any,
+      _: unknown,
       {
         bookId,
         customerId,
@@ -40,7 +39,7 @@ export const bookResolvers = {
         customerId: string;
         lentDate: string;
         dueDate: string;
-      }
+      },
     ): Book => {
       const book = booksDataSource.getBookById(bookId);
       const customer = customersDataSource.getCustomerById(customerId);
@@ -69,8 +68,8 @@ export const bookResolvers = {
 
     // Mark a book as returned, change its isLent field to false and add a new lendingRecord
     returnBook: (
-      _: any,
-      { bookId, returnDate }: { bookId: string; returnDate: string }
+      _: unknown,
+      { bookId, returnDate }: { bookId: string; returnDate: string },
     ): Book => {
       const book = booksDataSource.getBookById(bookId);
 
@@ -82,7 +81,7 @@ export const bookResolvers = {
       // Check if the book is currently lent out
       if (!book.isLent) {
         throw new Error(
-          `Book with ID ${bookId} is not currently lent to anyone.`
+          `Book with ID ${bookId} is not currently lent to anyone.`,
         );
       }
 
@@ -91,7 +90,7 @@ export const bookResolvers = {
 
       if (!record) {
         throw new Error(
-          "No active lending record found for book ID ${bookId}."
+          'No active lending record found for book ID ${bookId}.',
         );
       }
       // Update the record and the book
@@ -111,7 +110,7 @@ export const bookResolvers = {
     currentLendee: (book: Book): Customer | null => {
       if (!book.currentLendeeId) return null;
       const customer = customersDataSource.getCustomerById(
-        book.currentLendeeId
+        book.currentLendeeId,
       );
       if (!customer) {
         return null;
@@ -120,8 +119,6 @@ export const bookResolvers = {
     },
 
     // Find the lending history
-    lendingHistory: (book: Book): LendingRecord[] => {
-      return book.lendingHistory;
-    },
+    lendingHistory: (book: Book): LendingRecord[] => book.lendingHistory,
   },
 };
