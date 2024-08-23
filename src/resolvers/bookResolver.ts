@@ -110,7 +110,13 @@ export const bookResolvers = {
     // Find the current customer that is lending the book
     currentLendee: (book: Book): Customer | null => {
       if (!book.currentLendeeId) return null;
-      return customersDataSource.getCustomerById(book.currentLendeeId)!;
+      const customer = customersDataSource.getCustomerById(
+        book.currentLendeeId
+      );
+      if (!customer) {
+        return null;
+      }
+      return customer;
     },
 
     // Find the lending history
