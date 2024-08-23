@@ -6,7 +6,7 @@ dotenv.config();
 import { ApolloServer, AuthenticationError } from "apollo-server";
 import { Request } from "express";
 import { typeDefs } from "./schema";
-import { resolvers } from "./resolvers";
+import { resolvers } from "./resolvers/mainResolver";
 import { logger } from "./logger";
 import { authenticationContextMiddleware } from "./middleware/authentication";
 import { loggingContextMiddleware } from "./middleware/logging";
