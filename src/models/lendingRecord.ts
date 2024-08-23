@@ -5,17 +5,17 @@ export class LendingRecord {
 
   customerId: string;
 
-  lentDate: string;
+  lentDate: Date;
 
-  returnDate?: string;
+  returnDate?: Date;
 
-  dueDate: string;
+  dueDate: Date;
 
   constructor(
     customerId: string,
-    lentDate: string,
-    dueDate: string,
-    returnDate?: string,
+    lentDate: Date,
+    dueDate: Date,
+    returnDate?: Date,
   ) {
     this.id = generateUUID();
     this.customerId = customerId;

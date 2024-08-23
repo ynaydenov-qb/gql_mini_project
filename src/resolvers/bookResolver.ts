@@ -56,7 +56,11 @@ export const bookResolvers = {
         throw new Error(`Book with ID ${bookId} is already lent out`);
       }
 
-      const record = new LendingRecord(customer.id, lentDate, dueDate);
+      const record = new LendingRecord(
+        customer.id,
+        new Date(lentDate),
+        new Date(dueDate),
+      );
 
       book.isLent = true;
       book.currentLendeeId = customer.id;
@@ -94,7 +98,7 @@ export const bookResolvers = {
         );
       }
       // Update the record and the book
-      record.returnDate = returnDate;
+      record.returnDate = new Date(returnDate);
       book.isLent = false;
       book.currentLendeeId = undefined;
 
