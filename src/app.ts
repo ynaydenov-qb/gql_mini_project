@@ -1,8 +1,3 @@
-import dotenv from "dotenv";
-
-// Load environment variables
-dotenv.config();
-
 import { ApolloServer, AuthenticationError } from "apollo-server";
 import { Request } from "express";
 import { typeDefs } from "./schema";

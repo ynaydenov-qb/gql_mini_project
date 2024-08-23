@@ -2,6 +2,7 @@ import { createLogger, format, transports } from "winston";
 import path from "path";
 import DailyRotateFile from "winston-daily-rotate-file";
 import fs from "fs";
+import { env } from "./environment";
 
 const logDir = path.join(__dirname, "logs");
 
@@ -30,7 +31,7 @@ export const logger = createLogger({
       // Compress old logs to save space
       zippedArchive: true,
     }),
-    ...(process.env.NODE_ENV === "development"
+    ...(env.get("NODE_ENV") === "development"
       ? [new transports.Console({ format: jsonFormat })]
       : []),
   ],
