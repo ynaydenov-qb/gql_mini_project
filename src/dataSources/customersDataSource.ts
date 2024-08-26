@@ -53,10 +53,11 @@ export class CustomersDataSource {
   // Add a new customer
   async addCustomer(customer: Customer): Promise<void> {
     try {
-      await this.saveData();
       this.customers.push(customer);
+      await this.saveData();
     } catch (error) {
-      // If saving data fails, throw an error
+      // If saving data fails, remove the customer from memory
+      this.customers.pop();
       throw error;
     }
   }
@@ -67,11 +68,13 @@ export class CustomersDataSource {
       (customer) => customer.id === updatedCustomer.id,
     );
     if (index !== -1) {
+      const oldCustomer = this.customers[index];
       try {
-        await this.saveData();
         this.customers[index] = updatedCustomer;
+        await this.saveData(); // Save data asynchronously
       } catch (error) {
-        // If saving fails, throw error
+        // If saving fails,restore the old customer
+        this.customers[index] = oldCustomer;
         throw error;
       }
     }

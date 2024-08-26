@@ -58,14 +58,12 @@ export class BooksDataSource {
 
   // Add a new book
   async addBook(book: Book): Promise<void> {
+    this.books.push(book);
     try {
-      // First, save the new book to the file
       await this.saveData();
-
-      // If saving is successful, update the in-memory data
-      this.books.push(book);
     } catch (error) {
-      // If saving data fails, just throw the error
+      // If saving data fails, remove the book from memory
+      this.books.pop();
       throw error;
     }
   }
@@ -74,11 +72,13 @@ export class BooksDataSource {
   async updateBook(updatedBook: Book): Promise<void> {
     const index = this.books.findIndex((book) => book.id === updatedBook.id);
     if (index !== -1) {
+      const oldBook = this.books[index];
       try {
-        await this.saveData();
         this.books[index] = updatedBook;
+        await this.saveData();
       } catch (error) {
-        // If saving fails, throw an error
+        // If saving fails,restore the old book
+        this.books[index] = oldBook;
         throw error;
       }
     }
