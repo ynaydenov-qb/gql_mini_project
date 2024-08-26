@@ -3,7 +3,7 @@ import { GraphQLScalarType, Kind } from 'graphql';
 export const DateScalar = new GraphQLScalarType({
   name: 'Date',
   description: 'Custom Date scalar type',
-  serialize(value: unknown): string {
+  serialize(value: unknown | Date): string {
     if (value instanceof Date) {
       return value.toISOString();
     }
