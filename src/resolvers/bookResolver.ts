@@ -132,16 +132,13 @@ export const bookResolvers = {
       }: {
         customersDataSource: CustomersDataSource;
       },
-    ): Promise<Customer | null> => {
+    ): Promise<Customer | undefined> => {
       // Add 2 secods delay
       await new Promise((resolve) => setTimeout(resolve, 2000));
-      if (!book.currentLendeeId) return null;
+      if (!book.currentLendeeId) return;
       const customer = await customersDataSource.getCustomerById(
         book.currentLendeeId,
       );
-      if (!customer) {
-        return null;
-      }
       return customer;
     },
 

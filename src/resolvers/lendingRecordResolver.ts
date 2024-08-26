@@ -16,11 +16,10 @@ export const lendingRecordResolvers = {
       }: {
         customersDataSource: CustomersDataSource;
       },
-    ): Promise<Customer | null> => {
+    ): Promise<Customer | undefined> => {
       const customer = await customersDataSource.getCustomerById(
         record.customerId,
       );
-      if (!customer) return null;
       return customer;
     },
   },
