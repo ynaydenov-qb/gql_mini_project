@@ -1,16 +1,22 @@
 import { Customer } from '../models/customer';
 import { LendingRecord } from '../models/lendingRecord';
-import { CustomersDataSource } from '../dataSources/customersDataSource';
 import { DateScalar } from '../customScalars/dateScalar';
-
-const customersDataSource = new CustomersDataSource();
+import { CustomersDataSource } from '../dataSources/customersDataSource';
 
 export const lendingRecordResolvers = {
   Date: DateScalar,
 
   LendingRecord: {
     // Find the customer associated with a lending record
-    customer: async (record: LendingRecord): Promise<Customer | null> => {
+    customer: async (
+      record: LendingRecord,
+      _: unknown,
+      {
+        customersDataSource,
+      }: {
+        customersDataSource: CustomersDataSource;
+      },
+    ): Promise<Customer | null> => {
       const customer = await customersDataSource.getCustomerById(
         record.customerId,
       );

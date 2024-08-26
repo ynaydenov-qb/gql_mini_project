@@ -5,6 +5,11 @@ import { resolvers } from './resolvers/mainResolver';
 import { logger } from './logger';
 import { authenticationContextMiddleware } from './middleware/authentication';
 import { loggingContextMiddleware } from './middleware/logging';
+import { BooksDataSource } from './dataSources/booksDataSource';
+import { CustomersDataSource } from './dataSources/customersDataSource';
+
+const booksDataSource = new BooksDataSource();
+const customersDataSource = new CustomersDataSource();
 
 const createContext = ({ req }: { req: Request }) => {
   // Initialize an empty context object
@@ -13,6 +18,8 @@ const createContext = ({ req }: { req: Request }) => {
   // Apply authentication and logging middleware
   context = { ...context, ...authenticationContextMiddleware({ req }) };
   context = { ...context, ...loggingContextMiddleware({ req }) };
+
+  context = { ...context, booksDataSource, customersDataSource };
 
   return context;
 };

@@ -1,21 +1,23 @@
+import { BooksDataSource } from '../dataSources/booksDataSource';
+import { CustomersDataSource } from '../dataSources/customersDataSource';
 import { Book } from '../models/book';
 import { Customer } from '../models/customer';
 import { LendingRecord } from '../models/lendingRecord';
-import { BooksDataSource } from '../dataSources/booksDataSource';
-import { CustomersDataSource } from '../dataSources/customersDataSource';
-
-const booksDataSource = new BooksDataSource();
-const customersDataSource = new CustomersDataSource();
 
 export const bookResolvers = {
   Query: {
     // Get all books
-    books: async (): Promise<Book[]> => await booksDataSource.getBooks(),
+    books: async (
+      _: unknown,
+      __: unknown,
+      { booksDataSource }: { booksDataSource: BooksDataSource },
+    ): Promise<Book[]> => await booksDataSource.getBooks(),
 
     // Get a book by id
     book: async (
       _: unknown,
       { id }: { id: string },
+      { booksDataSource }: { booksDataSource: BooksDataSource },
     ): Promise<Book | undefined> => await booksDataSource.getBookById(id),
   },
   Mutation: {
@@ -23,6 +25,7 @@ export const bookResolvers = {
     addBook: (
       _: unknown,
       { title, author }: { title: string; author: string },
+      { booksDataSource }: { booksDataSource: BooksDataSource },
     ): Book => {
       const newBook = new Book(title, author);
       booksDataSource.addBook(newBook);
@@ -41,6 +44,13 @@ export const bookResolvers = {
         customerId: string;
         lentDate: string;
         dueDate: string;
+      },
+      {
+        booksDataSource,
+        customersDataSource,
+      }: {
+        booksDataSource: BooksDataSource;
+        customersDataSource: CustomersDataSource;
       },
     ): Promise<Book> => {
       const book = await booksDataSource.getBookById(bookId);
@@ -76,6 +86,7 @@ export const bookResolvers = {
     returnBook: async (
       _: unknown,
       { bookId, returnDate }: { bookId: string; returnDate: string },
+      { booksDataSource }: { booksDataSource: BooksDataSource },
     ): Promise<Book> => {
       const book = await booksDataSource.getBookById(bookId);
 
@@ -113,7 +124,15 @@ export const bookResolvers = {
 
   Book: {
     // Find the current customer that is lending the book
-    currentLendee: async (book: Book): Promise<Customer | null> => {
+    currentLendee: async (
+      book: Book,
+      _: unknown,
+      {
+        customersDataSource,
+      }: {
+        customersDataSource: CustomersDataSource;
+      },
+    ): Promise<Customer | null> => {
       // Add 2 secods delay
       await new Promise((resolve) => setTimeout(resolve, 2000));
       if (!book.currentLendeeId) return null;

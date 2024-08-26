@@ -1,18 +1,28 @@
-import { Customer } from '../models/customer';
 import { CustomersDataSource } from '../dataSources/customersDataSource';
-
-const customersDataSource = new CustomersDataSource();
+import { Customer } from '../models/customer';
 
 export const customerResolvers = {
   Query: {
     // Get all customers
-    customers: async (): Promise<Customer[]> =>
-      await customersDataSource.getCustomers(),
+    customers: async (
+      _: unknown,
+      __: unknown,
+      {
+        customersDataSource,
+      }: {
+        customersDataSource: CustomersDataSource;
+      },
+    ): Promise<Customer[]> => await customersDataSource.getCustomers(),
 
     // Get a customer by id
     customer: async (
       _: unknown,
       { id }: { id: string },
+      {
+        customersDataSource,
+      }: {
+        customersDataSource: CustomersDataSource;
+      },
     ): Promise<Customer | undefined> =>
       await customersDataSource.getCustomerById(id),
   },
@@ -21,6 +31,11 @@ export const customerResolvers = {
     addCustomer: (
       _: unknown,
       { name, email }: { name: string; email: string },
+      {
+        customersDataSource,
+      }: {
+        customersDataSource: CustomersDataSource;
+      },
     ): Customer => {
       const newCustomer = new Customer(name, email);
       customersDataSource.addCustomer(newCustomer);
