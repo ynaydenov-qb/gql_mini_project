@@ -10,11 +10,13 @@ const customersDataSource = new CustomersDataSource();
 export const bookResolvers = {
   Query: {
     // Get all books
-    books: (): Book[] => booksDataSource.getBooks(),
+    books: async (): Promise<Book[]> => await booksDataSource.getBooks(),
 
     // Get a book by id
-    book: (_: unknown, { id }: { id: string }): Book | undefined =>
-      booksDataSource.getBookById(id),
+    book: async (
+      _: unknown,
+      { id }: { id: string },
+    ): Promise<Book | undefined> => await booksDataSource.getBookById(id),
   },
   Mutation: {
     // Add a new book, the isLent field is set to false by default
@@ -27,7 +29,7 @@ export const bookResolvers = {
       return newBook;
     },
     // Lend a book to a customer, updates the fields of a book related to lending
-    lendBook: (
+    lendBook: async (
       _: unknown,
       {
         bookId,
@@ -40,9 +42,9 @@ export const bookResolvers = {
         lentDate: string;
         dueDate: string;
       },
-    ): Book => {
-      const book = booksDataSource.getBookById(bookId);
-      const customer = customersDataSource.getCustomerById(customerId);
+    ): Promise<Book> => {
+      const book = await booksDataSource.getBookById(bookId);
+      const customer = await customersDataSource.getCustomerById(customerId);
 
       if (!book) {
         throw new Error(`Book with ID ${bookId} was not found`);
@@ -71,11 +73,11 @@ export const bookResolvers = {
     },
 
     // Mark a book as returned, change its isLent field to false and add a new lendingRecord
-    returnBook: (
+    returnBook: async (
       _: unknown,
       { bookId, returnDate }: { bookId: string; returnDate: string },
-    ): Book => {
-      const book = booksDataSource.getBookById(bookId);
+    ): Promise<Book> => {
+      const book = await booksDataSource.getBookById(bookId);
 
       // Check if the book exists
       if (!book) {
@@ -111,9 +113,11 @@ export const bookResolvers = {
 
   Book: {
     // Find the current customer that is lending the book
-    currentLendee: (book: Book): Customer | null => {
+    currentLendee: async (book: Book): Promise<Customer | null> => {
+      // Add 2 secods delay
+      await new Promise((resolve) => setTimeout(resolve, 2000));
       if (!book.currentLendeeId) return null;
-      const customer = customersDataSource.getCustomerById(
+      const customer = await customersDataSource.getCustomerById(
         book.currentLendeeId,
       );
       if (!customer) {

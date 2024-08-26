@@ -6,11 +6,15 @@ const customersDataSource = new CustomersDataSource();
 export const customerResolvers = {
   Query: {
     // Get all customers
-    customers: (): Customer[] => customersDataSource.getCustomers(),
+    customers: async (): Promise<Customer[]> =>
+      await customersDataSource.getCustomers(),
 
     // Get a customer by id
-    customer: (_: unknown, { id }: { id: string }): Customer | undefined =>
-      customersDataSource.getCustomerById(id),
+    customer: async (
+      _: unknown,
+      { id }: { id: string },
+    ): Promise<Customer | undefined> =>
+      await customersDataSource.getCustomerById(id),
   },
   Mutation: {
     // Add a new customer

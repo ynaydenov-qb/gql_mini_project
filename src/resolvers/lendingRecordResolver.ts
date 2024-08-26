@@ -10,7 +10,12 @@ export const lendingRecordResolvers = {
 
   LendingRecord: {
     // Find the customer associated with a lending record
-    customer: (record: LendingRecord): Customer =>
-      customersDataSource.getCustomerById(record.customerId)!,
+    customer: async (record: LendingRecord): Promise<Customer | null> => {
+      const customer = await customersDataSource.getCustomerById(
+        record.customerId,
+      );
+      if (!customer) return null;
+      return customer;
+    },
   },
 };

@@ -5,7 +5,7 @@ export const lendingRecordTypeDefs = gql`
 
   type LendingRecord {
     id: String!
-    customer: Customer!
+    customer: Customer
     lentDate: Date!
     returnDate: Date
     dueDate: Date!
