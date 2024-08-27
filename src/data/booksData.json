@@ -131,5 +131,12 @@
     "author": "asynchronous write tester",
     "isLent": false,
     "lendingHistory": []
+  },
+  {
+    "id": "863dda5d-067f-448a-a245-d2be5b59690b",
+    "title": "new method for adding books",
+    "author": "latest addBookMethod tested",
+    "isLent": false,
+    "lendingHistory": []
   }
 ]

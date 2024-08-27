@@ -1,6 +1,7 @@
 import fs from 'fs/promises';
 import path from 'path';
 import { Customer } from '../models/customer';
+import { logger } from '../logger';
 
 // Path to the JSON file containing the customers
 const customersDataPath = path.join(
@@ -23,7 +24,7 @@ export class CustomersDataSource {
       const data = await fs.readFile(customersDataPath, 'utf8');
       this.customers = JSON.parse(data) || [];
     } catch (error) {
-      console.error('Error reading customers data:', error);
+      logger.error('Error reading customers data:', error);
       this.customers = [];
     }
   }
@@ -36,7 +37,7 @@ export class CustomersDataSource {
         JSON.stringify(this.customers, null, 2),
       );
     } catch (error) {
-      console.error('Error writing customers data:', error);
+      logger.error('Error writing customers data:', error);
     }
   }
 
@@ -53,30 +54,36 @@ export class CustomersDataSource {
   // Add a new customer
   async addCustomer(customer: Customer): Promise<void> {
     try {
+      const data = await fs.readFile(customersDataPath, 'utf8');
+      const customers: Customer[] = JSON.parse(data) || [];
+      customers.push(customer);
+      await fs.writeFile(customersDataPath, JSON.stringify(customers, null, 2));
       this.customers.push(customer);
-      await this.saveData();
     } catch (error) {
-      // If saving data fails, remove the customer from memory
-      this.customers.pop();
-      throw error;
+      logger.error('Error adding customer:', error);
+      throw new Error('Failed to add customer');
     }
   }
 
   // Update existing customer
   async updateCustomer(updatedCustomer: Customer): Promise<void> {
-    const index = this.customers.findIndex(
-      (customer) => customer.id === updatedCustomer.id,
-    );
-    if (index !== -1) {
-      const oldCustomer = this.customers[index];
-      try {
+    try {
+      const data = await fs.readFile(customersDataPath, 'utf8');
+      const customers: Customer[] = JSON.parse(data) || [];
+      const index = customers.findIndex(
+        (customer) => customer.id === updatedCustomer.id,
+      );
+      if (index !== -1) {
+        customers[index] = updatedCustomer;
+        await fs.writeFile(
+          customersDataPath,
+          JSON.stringify(customers, null, 2),
+        );
         this.customers[index] = updatedCustomer;
-        await this.saveData(); // Save data asynchronously
-      } catch (error) {
-        // If saving fails,restore the old customer
-        this.customers[index] = oldCustomer;
-        throw error;
       }
+    } catch (error) {
+      logger.error('Error updating customer:', error);
+      throw new Error('Failed to update customer');
     }
   }
 }

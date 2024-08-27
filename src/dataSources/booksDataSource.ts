@@ -3,6 +3,7 @@ import path from 'path';
 import { Book } from '../models/book';
 import { LendingRecord } from '../models/lendingRecord';
 import { parseLendingRecordDates } from '../utils';
+import { logger } from '../logger';
 
 // Path to JSON file where books are stored
 const booksDataPath = path.join(__dirname, '..', 'data', 'booksData.json');
@@ -20,7 +21,7 @@ export class BooksDataSource {
       const data = await fs.readFile(booksDataPath, 'utf-8');
       this.books = JSON.parse(data) || [];
     } catch (error) {
-      console.error('Error reading books data:', error);
+      logger.error('Error reading books data:', error);
       this.books = [];
     }
   }
@@ -30,7 +31,7 @@ export class BooksDataSource {
     try {
       await fs.writeFile(booksDataPath, JSON.stringify(this.books, null, 2));
     } catch (error) {
-      console.error('Error writing books data:', error);
+      logger.error('Error writing books data:', error);
     }
   }
 
@@ -58,29 +59,32 @@ export class BooksDataSource {
 
   // Add a new book
   async addBook(book: Book): Promise<void> {
-    this.books.push(book);
     try {
-      await this.saveData();
+      const data = await fs.readFile(booksDataPath, 'utf8');
+      const books: Book[] = JSON.parse(data) || [];
+      books.push(book);
+      await fs.writeFile(booksDataPath, JSON.stringify(books, null, 2));
+      this.books.push(book);
     } catch (error) {
-      // If saving data fails, remove the book from memory
-      this.books.pop();
-      throw error;
+      logger.error('Error adding book:', error);
+      throw new Error('Failed to add book');
     }
   }
 
   // Update an existing book
   async updateBook(updatedBook: Book): Promise<void> {
-    const index = this.books.findIndex((book) => book.id === updatedBook.id);
-    if (index !== -1) {
-      const oldBook = this.books[index];
-      try {
+    try {
+      const data = await fs.readFile(booksDataPath, 'utf8');
+      const books: Book[] = JSON.parse(data) || [];
+      const index = books.findIndex((book) => book.id === updatedBook.id);
+      if (index !== -1) {
+        books[index] = updatedBook;
+        await fs.writeFile(booksDataPath, JSON.stringify(books, null, 2));
         this.books[index] = updatedBook;
-        await this.saveData();
-      } catch (error) {
-        // If saving fails,restore the old book
-        this.books[index] = oldBook;
-        throw error;
       }
+    } catch (error) {
+      logger.error('Error updating book:', error);
+      throw new Error('Failed to update book');
     }
   }
 }
