@@ -1,0 +1,148 @@
+import { BooksDataSource } from '../dataSources/booksDataSource';
+import { CustomersDataSource } from '../dataSources/customersDataSource';
+import { Book } from '../models/book';
+import { Customer } from '../models/customer';
+import { LendingRecord } from '../models/lendingRecord';
+
+export const bookResolvers = {
+  Query: {
+    // Get all books
+    books: async (
+      _: unknown,
+      __: unknown,
+      { booksDataSource }: { booksDataSource: BooksDataSource },
+    ): Promise<Book[]> => await booksDataSource.getBooks(),
+
+    // Get a book by id
+    book: async (
+      _: unknown,
+      { id }: { id: string },
+      { booksDataSource }: { booksDataSource: BooksDataSource },
+    ): Promise<Book | undefined> => await booksDataSource.getBookById(id),
+  },
+  Mutation: {
+    // Add a new book, the isLent field is set to false by default
+    addBook: (
+      _: unknown,
+      { title, author }: { title: string; author: string },
+      { booksDataSource }: { booksDataSource: BooksDataSource },
+    ): Book => {
+      const newBook = new Book(title, author);
+      booksDataSource.addBook(newBook);
+      return newBook;
+    },
+    // Lend a book to a customer, updates the fields of a book related to lending
+    lendBook: async (
+      _: unknown,
+      {
+        bookId,
+        customerId,
+        lentDate,
+        dueDate,
+      }: {
+        bookId: string;
+        customerId: string;
+        lentDate: string;
+        dueDate: string;
+      },
+      {
+        booksDataSource,
+        customersDataSource,
+      }: {
+        booksDataSource: BooksDataSource;
+        customersDataSource: CustomersDataSource;
+      },
+    ): Promise<Book> => {
+      const book = await booksDataSource.getBookById(bookId);
+      const customer = await customersDataSource.getCustomerById(customerId);
+
+      if (!book) {
+        throw new Error(`Book with ID ${bookId} was not found`);
+      }
+
+      if (!customer) {
+        throw new Error(`Customer with ID ${customerId} was not found`);
+      }
+
+      if (book.isLent) {
+        throw new Error(`Book with ID ${bookId} is already lent out`);
+      }
+
+      const record = new LendingRecord(
+        customer.id,
+        new Date(lentDate),
+        new Date(dueDate),
+      );
+
+      book.isLent = true;
+      book.currentLendeeId = customer.id;
+      book.lendingHistory.push(record);
+      booksDataSource.updateBook(book);
+
+      return book;
+    },
+
+    // Mark a book as returned, change its isLent field to false and add a new lendingRecord
+    returnBook: async (
+      _: unknown,
+      { bookId, returnDate }: { bookId: string; returnDate: string },
+      { booksDataSource }: { booksDataSource: BooksDataSource },
+    ): Promise<Book> => {
+      const book = await booksDataSource.getBookById(bookId);
+
+      // Check if the book exists
+      if (!book) {
+        throw new Error(`Book with ID ${bookId} does not exist.`);
+      }
+
+      // Check if the book is currently lent out
+      if (!book.isLent) {
+        throw new Error(
+          `Book with ID ${bookId} is not currently lent to anyone.`,
+        );
+      }
+
+      // Find the lending record without return date
+      const record = book.lendingHistory.find((r) => !r.returnDate);
+
+      if (!record) {
+        throw new Error(
+          'No active lending record found for book ID ${bookId}.',
+        );
+      }
+      // Update the record and the book
+      record.returnDate = new Date(returnDate);
+      book.isLent = false;
+      book.currentLendeeId = undefined;
+
+      // Update the book in the data source
+      booksDataSource.updateBook(book);
+
+      return book;
+    },
+  },
+
+  Book: {
+    // Find the current customer that is lending the book
+    currentLendee: async (
+      book: Book,
+      _: unknown,
+      {
+        customersDataSource,
+      }: {
+        customersDataSource: CustomersDataSource;
+      },
+    ): Promise<Customer | undefined> => {
+      // Add 2 secods delay
+      await new Promise((resolve) => setTimeout(resolve, 2000));
+      if (!book.currentLendeeId) return;
+      const customer = await customersDataSource.getCustomerById(
+        book.currentLendeeId,
+      );
+      return customer;
+    },
+
+    // Find the lending history
+    lendingHistory: (book: Book): LendingRecord[] => book.lendingHistory,
+  },
+};
